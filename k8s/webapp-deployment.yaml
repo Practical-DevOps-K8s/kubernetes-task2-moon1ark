@@ -25,13 +25,16 @@ spec:
 
             bundle install
             bundle exec rails db:prepare
-            bundle exec rails server -b 0.0.0.0 -p 3000
+            bundle exec rails server -b 0.0.0.0 -p 3000 &
+            
+            while ! nc -z localhost 3000; do echo "Waiting for Rails to start..."; sleep 1; done
+            wait
         ports:
         - containerPort: 3000
         readinessProbe:
           tcpSocket:
             port: 3000
-          initialDelaySeconds: 5
+          initialDelaySeconds: 1
           periodSeconds: 2
         env:
         - name: DATABASE_URL
