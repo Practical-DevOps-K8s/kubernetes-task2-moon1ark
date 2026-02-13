@@ -21,4 +21,13 @@ spec:
         env:
         - name: DATABASE_URL
           value: "postgresql://postgres:password123@db-service:5432/webapp_db"
-        - name: RA
+        - name: RAILS_ENV
+          value: "development"
+        - name: SECRET_KEY_BASE
+          value: "dummysecret"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
