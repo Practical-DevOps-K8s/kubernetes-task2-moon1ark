@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: my-rails-app:v1 
+        image: my-rails-app:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
@@ -22,7 +22,7 @@ spec:
         - name: DATABASE_URL
           value: "postgres://postgres:password123@postgres-service:5432/webapp_production"
         - name: RAILS_ENV
-          value: "development" 
+          value: "development"
         - name: SECRET_KEY_BASE
           value: "804d96a77d13b4f69747209d6c79a4ec"
         - name: RAILS_SERVE_STATIC_FILES
