@@ -12,19 +12,27 @@ spec:
       labels:
         app: webapp
     spec:
-      containers:
-      - name: rails-app
+      initContainers:
+      - name: init-db
         image: ruby:3.2
         workingDir: /app
         command: ["/bin/sh", "-c"]
         args:
           - |
-            # Прискорена підготовка
-            apt-get update -qq && apt-get install -y libpq-dev nodejs netcat-traditional
-            bundle install
             until nc -z db-service 5432; do echo "Waiting for DB..."; sleep 2; done
             bundle exec rails db:prepare
-            bundle exec rails server -b 0.0.0.0
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://postgres:password123@db-service:5432/webapp_db"
+        volumeMounts:
+        - name: app-code
+          mountPath: /app
+      
+      containers:
+      - name: rails-app
+        image: ruby:3.2
+        workingDir: /app
+        command: ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
         ports:
         - containerPort: 3000
         env:
@@ -32,14 +40,6 @@ spec:
           value: "postgresql://postgres:password123@db-service:5432/webapp_db"
         - name: RAILS_ENV
           value: "development"
-        # ЦЕ ВИПРАВЛЯЄ ECONNREFUSED: крок wait буде тривати, поки Rails не запрацює
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 15
-          periodSeconds: 5
-          failureThreshold: 20
         volumeMounts:
         - name: app-code
           mountPath: /app
@@ -47,15 +47,3 @@ spec:
       - name: app-code
         hostPath:
           path: /home/runner/work/kubernetes-task2-moon1ark/kubernetes-task2-moon1ark
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: webapp-service
-spec:
-  selector:
-    app: webapp
-  ports:
-    - protocol: TCP
-      port: 80         # Воркфлоу робить forward саме для порту 80
-      targetPort: 3000
