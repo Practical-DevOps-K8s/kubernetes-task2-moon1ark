@@ -12,30 +12,28 @@ spec:
       labels:
         app: webapp
     spec:
-      initContainers:
-      - name: wait-for-db
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z db-service 5432; do echo waiting for db; sleep 2; done;']
-      
       containers:
       - name: rails-app
-        image: webapp:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            bundle exec rails db:prepare
-            bundle exec rails server -b 0.0.0.0
-        ports:
-        - containerPort: 3000
+        image: webapp:latest 
+        imagePullPolicy: IfNotPresent 
         env:
         - name: DATABASE_URL
           value: "postgresql://postgres:password123@db-service:5432/webapp_db"
         - name: RAILS_ENV
           value: "development"
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        - name: RAILS_SERVE_STATIC_FILES
+          value: "true"
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  selector:
+    app: webapp
+  ports:
+    - protocol: TCP
+      port: 80         
+      targetPort: 3000 
