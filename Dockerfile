@@ -1,6 +1,6 @@
 FROM ruby:3.2
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs netcat-traditional postgresql-client
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs netcat-traditional
 
 WORKDIR /app
 
