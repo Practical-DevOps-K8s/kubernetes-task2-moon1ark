@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: webapp-deployment
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: webapp
@@ -13,11 +14,15 @@ spec:
     spec:
       containers:
       - name: rails-app
-        image: webapp:latest
+        image: webapp:latest 
         imagePullPolicy: IfNotPresent
         env:
         - name: DATABASE_URL
           value: "postgresql://postgres:password123@db-service:5432/webapp_db"
+        - name: RAILS_ENV
+          value: "development"
+        ports:
+        - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
@@ -28,5 +33,5 @@ spec:
     app: webapp
   ports:
     - protocol: TCP
-      port: 80        
+      port: 80         
       targetPort: 3000 
