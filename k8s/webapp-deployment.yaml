@@ -12,6 +12,11 @@ spec:
       labels:
         app: webapp
     spec:
+      initContainers:
+      - name: wait-for-db
+        image: busybox:1.28
+        command: ['sh', '-c', "until nc -z db-service 5432; do echo waiting for db; sleep 2; done;"]
+      
       containers:
       - name: rails-app
         image: ruby:3.2
@@ -19,9 +24,6 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            apt-get update -qq && apt-get install -y libpq-dev nodejs netcat-traditional
-            bundle install
-            until nc -z db-service 5432; do echo "Waiting for DB..."; sleep 2; done
             bundle exec rails db:prepare
             bundle exec rails server -b 0.0.0.0
         ports:
@@ -32,12 +34,10 @@ spec:
         - name: RAILS_ENV
           value: "development"
         readinessProbe:
-          httpGet:
-            path: /
+          tcpSocket:
             port: 3000
-          initialDelaySeconds: 20 
+          initialDelaySeconds: 5
           periodSeconds: 5
-          failureThreshold: 20    
         volumeMounts:
         - name: app-code
           mountPath: /app
@@ -55,5 +55,5 @@ spec:
     app: webapp
   ports:
     - protocol: TCP
-      port: 80
+      port: 80         
       targetPort: 3000
