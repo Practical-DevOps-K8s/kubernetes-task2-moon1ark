@@ -12,23 +12,10 @@ spec:
       labels:
         app: webapp
     spec:
-      initContainers:
-      - name: wait-for-db
-        image: busybox:1.28
-        command: ['sh', '-c', 'until nc -z postgres-service 5432; do echo waiting for db; sleep 2; done;']
-      
-      - name: db-prepare
-        image: my-rails-app:v1
-        command: ['bin/rails', 'db:prepare']
-        env:
-        - name: DATABASE_URL
-          value: "postgres://postgres:password123@postgres-service:5432/webapp_production"
-        - name: RAILS_ENV
-          value: "production"
-
       containers:
       - name: webapp
         image: my-rails-app:v1
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
         env:
@@ -36,6 +23,8 @@ spec:
           value: "postgres://postgres:password123@postgres-service:5432/webapp_production"
         - name: RAILS_ENV
           value: "production"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "true"
         - name: SECRET_KEY_BASE
           value: "804d96a77d13b4f69747209d6c79a4ec"
         - name: RAILS_SERVE_STATIC_FILES

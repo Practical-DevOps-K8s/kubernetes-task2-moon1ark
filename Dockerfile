@@ -1,6 +1,6 @@
 FROM ruby:3.3.1
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs dos2unix
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs dos2unix netcat-traditional
 
 WORKDIR /app
 
@@ -9,8 +9,10 @@ RUN bundle install
 
 COPY . .
 
-RUN dos2unix bin/rails && chmod +x bin/rails
+RUN find bin/ -type f -exec dos2unix {} + && chmod -R +x bin/
 
 EXPOSE 3000
 
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+CMD sh -c "until nc -z postgres-service 5432; do echo 'Waiting for DB...'; sleep 1; done; \
+           bundle exec rails db:prepare && \
+           bundle exec rails server -b 0.0.0.0"
