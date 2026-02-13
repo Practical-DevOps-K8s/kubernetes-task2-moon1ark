@@ -19,8 +19,16 @@ spec:
       
       containers:
       - name: rails-app
-        image: webapp:latest
-        imagePullPolicy: IfNotPresent 
+        image: ruby:3.2 
+        workingDir: /app
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs netcat-traditional
+            bundle install
+            rm -f tmp/pids/server.pid
+            bundle exec rails db:prepare
+            bundle exec rails server -b 0.0.0.0
         ports:
         - containerPort: 3000
         env:
@@ -34,6 +42,5 @@ spec:
           httpGet:
             path: /
             port: 3000
-          initialDelaySeconds: 40 
+          initialDelaySeconds: 120 
           periodSeconds: 10
-          failureThreshold: 6 
