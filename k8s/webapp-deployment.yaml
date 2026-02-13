@@ -31,6 +31,12 @@ spec:
           value: "postgresql://postgres:password123@db-service:5432/webapp_db"
         - name: RAILS_ENV
           value: "development"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 5
         volumeMounts:
         - name: app-code
           mountPath: /app
@@ -48,5 +54,5 @@ spec:
     app: webapp
   ports:
     - protocol: TCP
-      port: 80        
+      port: 80
       targetPort: 3000
