@@ -3,25 +3,32 @@ kind: Deployment
 metadata:
   name: postgres
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: postgres
-  replicas: 1
   template:
     metadata:
       labels:
         app: postgres
     spec:
       containers:
-        - name: postgres
-          image: postgres:15
-          env:
-            - name: POSTGRES_PASSWORD
-              value: password123
-            - name: POSTGRES_DB
-              value: webapp_db
-          ports:
-            - containerPort: 5432
+      - name: postgres
+        image: postgres:15
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: password123
+        - name: POSTGRES_DB
+          value: webapp_db
+        ports:
+        - containerPort: 5432
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 2
+          periodSeconds: 2
 ---
 apiVersion: v1
 kind: Service
