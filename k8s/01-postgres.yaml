@@ -33,10 +33,7 @@ spec:
           value: "password123"
         - name: POSTGRES_DB
           value: "webapp_production"
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: "trust"
         ports:
         - containerPort: 5432
-        readinessProbe:
-          exec:
-            command: ["pg_isready", "-U", "postgres"]
-          initialDelaySeconds: 5
-          periodSeconds: 5
