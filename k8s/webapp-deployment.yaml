@@ -20,7 +20,7 @@ spec:
       containers:
       - name: rails-app
         image: webapp:latest
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent 
         ports:
         - containerPort: 3000
         env:
@@ -34,5 +34,6 @@ spec:
           httpGet:
             path: /
             port: 3000
-          initialDelaySeconds: 20 
+          initialDelaySeconds: 40 
           periodSeconds: 10
+          failureThreshold: 6 

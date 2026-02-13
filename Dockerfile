@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["bash", "-c", "rm -f tmp/pids/server.pid && bundle exec rails db:prepare && bundle exec rails server -b 0.0.0.0"]
+CMD ["bash", "-c", "rm -f tmp/pids/server.pid && until nc -z db-service 5432; do echo 'Waiting for Postgres...'; sleep 1; done && bundle exec rails db:prepare && bundle exec rails server -b 0.0.0.0"]
