@@ -16,7 +16,7 @@ spec:
         image: postgres:15
         env:
         - name: POSTGRES_PASSWORD
-          value: "password123" 
+          value: "password123"
         - name: POSTGRES_DB
           value: "webapp_db"
         ports:
@@ -30,4 +30,6 @@ spec:
   selector:
     app: postgres
   ports:
-    port: 5432
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
