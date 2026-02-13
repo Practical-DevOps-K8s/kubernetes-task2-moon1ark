@@ -1,6 +1,6 @@
 FROM ruby:3.3.1
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs dos2unix
 
 WORKDIR /app
 
@@ -9,9 +9,7 @@ RUN bundle install
 
 COPY . .
 
-RUN apt-get install -y dos2unix && \
-    dos2unix bin/rails && \
-    chmod +x bin/rails
+RUN dos2unix bin/rails && chmod +x bin/rails
 
 EXPOSE 3000
 
