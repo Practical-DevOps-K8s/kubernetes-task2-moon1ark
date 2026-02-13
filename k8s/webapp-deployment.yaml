@@ -23,6 +23,7 @@ spec:
             bundle install
             until nc -z db-service 5432; do echo "Waiting for DB..."; sleep 2; done
             bundle exec rails db:prepare
+            echo "Starting Rails server..."
             bundle exec rails server -b 0.0.0.0
         ports:
         - containerPort: 3000
@@ -31,12 +32,6 @@ spec:
           value: "postgresql://postgres:password123@db-service:5432/webapp_db"
         - name: RAILS_ENV
           value: "development"
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 15
-          periodSeconds: 5
         volumeMounts:
         - name: app-code
           mountPath: /app
