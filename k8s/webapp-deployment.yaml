@@ -14,21 +14,18 @@ spec:
     spec:
       containers:
       - name: rails-app
-        image: <your-image-name> 
+        image: <your-image-name>
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            bundle exec rails db:prepare &&
+            bundle exec rails server -b 0.0.0.0
         ports:
         - containerPort: 3000
         env:
         - name: DATABASE_URL
           value: "postgresql://postgres:password123@db-service:5432/webapp_db"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: webapp-service
-spec:
-  selector:
-    app: webapp
-  ports:
-    - protocol: TCP
-      port: 80         
-      targetPort: 3000 
+        - name: RAILS_ENV
+          value: "development"
+        - name: RAILS_LOG_TO_STDOUT
+          value: "true"
