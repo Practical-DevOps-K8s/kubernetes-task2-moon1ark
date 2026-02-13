@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: my-rails-app:v1 
-        imagePullPolicy: IfNotPresent
+        image: webapp:latest 
+        imagePullPolicy: Never
         ports:
         - containerPort: 3000
         env:
@@ -35,10 +35,9 @@ kind: Service
 metadata:
   name: webapp-service
 spec:
-  type: NodePort
   selector:
     app: webapp
   ports:
-    - port: 80         
-      targetPort: 3000 
-      nodePort: 32000
+    - protocol: TCP
+      port: 80        
+      targetPort: 3000
