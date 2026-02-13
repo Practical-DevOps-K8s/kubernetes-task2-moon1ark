@@ -1,6 +1,8 @@
 FROM ruby:3.3.1
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs dos2unix netcat-traditional
+RUN apt-get update -qq && \
+    apt-get install -y build-essential libpq-dev nodejs dos2unix netcat-traditional && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -9,7 +11,8 @@ RUN bundle install
 
 COPY . .
 
-RUN find bin/ -type f -print0 | xargs -0 dos2unix && chmod -R +x bin/
+RUN find bin/ -type f -print0 | xargs -0 dos2unix && \
+    chmod -R +x bin/
 
 EXPOSE 3000
 
