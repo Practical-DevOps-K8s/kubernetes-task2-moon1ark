@@ -37,3 +37,8 @@ spec:
           value: "trust"
         ports:
         - containerPort: 5432
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-U", "postgres"]
+          initialDelaySeconds: 2
+          periodSeconds: 2

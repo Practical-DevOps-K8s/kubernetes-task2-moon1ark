@@ -9,10 +9,8 @@ RUN bundle install
 
 COPY . .
 
-RUN find bin/ -type f -exec dos2unix {} + && chmod -R +x bin/
+RUN find bin/ -type f -print0 | xargs -0 dos2unix && chmod -R +x bin/
 
 EXPOSE 3000
 
-CMD sh -c "until nc -z postgres-service 5432; do echo 'Waiting for DB...'; sleep 1; done; \
-           bundle exec rails db:prepare && \
-           bundle exec rails server -b 0.0.0.0"
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
