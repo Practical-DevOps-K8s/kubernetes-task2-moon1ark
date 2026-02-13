@@ -22,7 +22,11 @@ spec:
             (
               apt-get update -qq && apt-get install -y libpq-dev nodejs netcat-traditional
               bundle install
+              
               until nc -z db-service 5432; do echo "Waiting for DB..."; sleep 1; done
+              
+              rm -f tmp/pids/server.pid
+              
               bundle exec rails db:prepare
               bundle exec rails server -b 0.0.0.0
             ) & 
@@ -51,5 +55,5 @@ spec:
     app: webapp
   ports:
     - protocol: TCP
-      port: 80         
+      port: 80
       targetPort: 3000
