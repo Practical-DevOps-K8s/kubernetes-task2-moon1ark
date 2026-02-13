@@ -13,4 +13,4 @@ RUN find bin/ -type f -exec dos2unix {} + && chmod -R +x bin/
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "rm -f tmp/pids/server.pid && until nc -z postgres-service 5432; do echo waiting; sleep 2; done; bundle exec rails db:prepare && bundle exec rails server -b 0.0.0.0"]
+CMD ["sh", "-c", "rm -f tmp/pids/server.pid && until nc -z postgres-service 5432; do echo waiting; sleep 1; done; bundle exec rails db:prepare && bundle exec rails server -b 0.0.0.0"]

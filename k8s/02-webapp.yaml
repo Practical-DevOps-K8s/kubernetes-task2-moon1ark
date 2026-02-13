@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: webapp:latest 
+        image: webapp:latest
         imagePullPolicy: Never
         ports:
         - containerPort: 3000
@@ -39,5 +39,5 @@ spec:
     app: webapp
   ports:
     - protocol: TCP
-      port: 80        
+      port: 80         
       targetPort: 3000
