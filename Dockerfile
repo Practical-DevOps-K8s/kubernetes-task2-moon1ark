@@ -9,6 +9,10 @@ RUN bundle install
 
 COPY . .
 
+RUN apt-get install -y dos2unix && \
+    dos2unix bin/rails && \
+    chmod +x bin/rails
+
 EXPOSE 3000
 
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["sh", "-c", "ruby bin/rails db:prepare && ruby bin/rails server -b 0.0.0.0"]

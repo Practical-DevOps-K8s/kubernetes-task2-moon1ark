@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: my-rails-app:v2
-        imagePullPolicy: IfNotPresent 
+        image: my-rails-app:v1 
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
         env:
@@ -24,7 +24,7 @@ spec:
         - name: RAILS_ENV
           value: "development" 
         - name: SECRET_KEY_BASE
-          value: "804d96a77d13b4f69747209d6c79a4ec" 
+          value: "804d96a77d13b4f69747209d6c79a4ec"
         - name: RAILS_SERVE_STATIC_FILES
           value: "true"
 ---
@@ -33,7 +33,7 @@ kind: Service
 metadata:
   name: webapp-service
 spec:
-  type: NodePort 
+  type: NodePort
   selector:
     app: webapp
   ports:
