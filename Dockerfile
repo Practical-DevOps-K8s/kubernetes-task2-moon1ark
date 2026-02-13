@@ -11,6 +11,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD bash -c "until nc -z db-service 5432; do echo 'Waiting for Postgres...'; sleep 1; done; \
-            bundle exec rails db:migrate 2>/dev/null || bundle exec rails db:setup; \
-            bundle exec rails server -b 0.0.0.0"
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
