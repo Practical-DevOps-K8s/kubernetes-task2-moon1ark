@@ -19,11 +19,14 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            apt-get update -qq && apt-get install -y libpq-dev nodejs netcat-traditional
-            bundle install
-            until nc -z db-service 5432; do echo "Waiting for DB..."; sleep 2; done
-            bundle exec rails db:prepare
-            bundle exec rails server -b 0.0.0.0
+            (
+              apt-get update -qq && apt-get install -y libpq-dev nodejs netcat-traditional
+              bundle install
+              until nc -z db-service 5432; do sleep 1; done
+              bundle exec rails db:prepare
+              bundle exec rails server -b 0.0.0.0
+            ) & 
+            while true; do sleep 3600; done
         ports:
         - containerPort: 3000
         env:
@@ -31,12 +34,6 @@ spec:
           value: "postgresql://postgres:password123@db-service:5432/webapp_db"
         - name: RAILS_ENV
           value: "development"
-        startupProbe:
-          httpGet:
-            path: /
-            port: 3000
-          failureThreshold: 30
-          periodSeconds: 10
         volumeMounts:
         - name: app-code
           mountPath: /app
