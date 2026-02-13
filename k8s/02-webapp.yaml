@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: my-rails-app:v1 
+        image: my-rails-app:v2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
